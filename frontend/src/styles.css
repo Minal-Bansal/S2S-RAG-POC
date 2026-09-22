@@ -1,0 +1,68 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0e1116;
+  color: #e6e6e6;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #9aa4b2;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #555;
+}
+.status-dot.connected { background: #3fb950; }
+.status-dot.connecting { background: #d29922; }
+.status-dot.error { background: #f85149; }
+
+button {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #21262d;
+  color: #e6e6e6;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: #30363d; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.transcript {
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 16px;
+  height: 420px;
+  overflow-y: auto;
+  background: #161b22;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.entry { font-size: 14px; line-height: 1.45; }
+.entry .role { font-weight: 600; margin-right: 6px; }
+.entry.user .role { color: #58a6ff; }
+.entry.assistant .role { color: #3fb950; }
+.entry.tool { color: #9aa4b2; font-style: italic; }
+.entry.tool .role { color: #d29922; }
