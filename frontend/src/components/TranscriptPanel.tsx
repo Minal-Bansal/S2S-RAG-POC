@@ -4,7 +4,11 @@ import type { TranscriptEntry } from "../realtime/types";
 const ROLE_LABEL: Record<TranscriptEntry["role"], string> = {
   user: "You",
   assistant: "Assistant",
-  tool: "search_policy",
+};
+
+const ROLE_INITIAL: Record<TranscriptEntry["role"], string> = {
+  user: "Y",
+  assistant: "S",
 };
 
 export function TranscriptPanel({ entries }: { entries: TranscriptEntry[] }) {
@@ -15,12 +19,15 @@ export function TranscriptPanel({ entries }: { entries: TranscriptEntry[] }) {
   }, [entries.length]);
 
   return (
-    <div className="transcript">
-      {entries.length === 0 && <div className="entry tool">Transcript will appear here once connected.</div>}
+    <div className="card transcript">
+      {entries.length === 0 && <div className="transcript-hint">Transcript will appear here once connected.</div>}
       {entries.map((entry) => (
-        <div key={entry.id} className={`entry ${entry.role}`}>
-          <span className="role">{ROLE_LABEL[entry.role]}:</span>
-          {entry.text}
+        <div key={entry.id} className={`bubble-line ${entry.role}`}>
+          <span className={`avatar ${entry.role}`}>{ROLE_INITIAL[entry.role]}</span>
+          <div className="bubble-col">
+            <span className="bubble-role">{ROLE_LABEL[entry.role]}</span>
+            <div className={`bubble ${entry.role}`}>{entry.text}</div>
+          </div>
         </div>
       ))}
       <div ref={bottomRef} />

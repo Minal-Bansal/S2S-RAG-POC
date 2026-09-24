@@ -10,6 +10,7 @@ const INDEX_PATH = path.join(__dirname, "..", "..", "data", "policy-index.json")
 export interface PolicyEvidence {
   text: string;
   section: string;
+  document: string;
   score: number;
 }
 
@@ -25,12 +26,13 @@ export interface PolicySearchResult {
  * tool wiring.
  */
 export interface PolicyRetriever {
-  search(question: string): Promise<PolicySearchResult>;
+  search(question: string, productHint?: string): Promise<PolicySearchResult>;
 }
 
 interface IndexedChunk {
   text: string;
   section: string;
+  document: string;
   embedding: number[];
 }
 
@@ -48,8 +50,9 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
 /**
  * Brute-force cosine-similarity search over a local JSON file of
- * {text, section, embedding} chunks. Fine for a single policy document
- * (a few hundred chunks) — the simplest reliable option for a POC.
+ * {text, section, document, embedding} chunks, spanning one or more source
+ * documents. Fine at this scale (a few hundred chunks) — the simplest
+ * reliable option for a POC.
  */
 export class LocalJsonPolicyRetriever implements PolicyRetriever {
   private chunks: IndexedChunk[] = [];
@@ -63,13 +66,25 @@ export class LocalJsonPolicyRetriever implements PolicyRetriever {
     this.chunks = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
   }
 
-  async search(question: string): Promise<PolicySearchResult> {
+  async search(question: string, productHint?: string): Promise<PolicySearchResult> {
     const queryVec = await embedText(question);
 
-    const scored = this.chunks
+    // When the model names a specific plan, scope the search to that plan's
+    // brochure — generic insurance boilerplate (waiting periods, sum insured,
+    // etc.) reads similarly across Star Health's product line, so semantic
+    // similarity alone can't reliably tell the documents apart otherwise.
+    let pool = this.chunks;
+    if (productHint && productHint.trim().length > 0) {
+      const hint = productHint.trim().toLowerCase();
+      const filtered = this.chunks.filter((c) => c.document.toLowerCase().includes(hint));
+      if (filtered.length > 0) pool = filtered;
+    }
+
+    const scored = pool
       .map((chunk) => ({
         text: chunk.text,
         section: chunk.section,
+        document: chunk.document,
         score: cosineSimilarity(queryVec, chunk.embedding),
       }))
       .sort((a, b) => b.score - a.score);

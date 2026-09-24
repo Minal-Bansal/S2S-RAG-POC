@@ -1,11 +1,16 @@
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 import { config } from "../config.js";
 
-const client = new OpenAI({ apiKey: config.openaiApiKey });
+const client = new AzureOpenAI({
+  endpoint: config.azureEndpoint,
+  apiKey: config.azureApiKey,
+  apiVersion: config.azureApiVersion,
+  deployment: config.azureEmbeddingDeployment,
+});
 
 export async function embedTexts(texts: string[]): Promise<number[][]> {
   const res = await client.embeddings.create({
-    model: config.embeddingModel,
+    model: config.azureEmbeddingDeployment,
     input: texts,
   });
   return res.data.map((d) => d.embedding);

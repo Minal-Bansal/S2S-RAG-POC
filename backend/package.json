@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "ingest": "tsx src/rag/ingest.ts",
+    "ingest:brochures": "tsx src/rag/ingestBrochures.ts",
     "generate:sample-pdf": "tsx src/rag/generateSamplePdf.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js"

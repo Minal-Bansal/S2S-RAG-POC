@@ -7,11 +7,11 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8787";
  * backend and returns whatever evidence/sufficiency it responds with.
  * The browser never talks to the vector store or embeddings directly.
  */
-export async function searchPolicy(question: string): Promise<PolicySearchResult> {
+export async function searchPolicy(question: string, product?: string): Promise<PolicySearchResult> {
   const res = await fetch(`${BACKEND_URL}/api/search-policy`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, product }),
   });
   if (!res.ok) {
     throw new Error(`search-policy failed: ${res.status} ${await res.text()}`);
@@ -19,7 +19,7 @@ export async function searchPolicy(question: string): Promise<PolicySearchResult
   return res.json();
 }
 
-export async function createRealtimeSession(): Promise<{ clientSecret: any; greeting: string }> {
+export async function createRealtimeSession(): Promise<{ clientSecret: any; greeting: string; realtimeCallUrl: string }> {
   const res = await fetch(`${BACKEND_URL}/api/session`, { method: "POST" });
   if (!res.ok) {
     throw new Error(`session create failed: ${res.status} ${await res.text()}`);

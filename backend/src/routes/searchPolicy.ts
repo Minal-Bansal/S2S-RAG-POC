@@ -11,6 +11,7 @@ export function buildSearchPolicyRouter(retriever: PolicyRetriever): Router {
    */
   router.post("/search-policy", async (req, res) => {
     const question = req.body?.question;
+    const product = typeof req.body?.product === "string" ? req.body.product : undefined;
     if (typeof question !== "string" || question.trim().length === 0) {
       res.status(400).json({ error: "Missing 'question' string in request body." });
       return;
@@ -18,7 +19,7 @@ export function buildSearchPolicyRouter(retriever: PolicyRetriever): Router {
 
     try {
       logEvent({ kind: "tool_call", question });
-      const result = await retriever.search(question);
+      const result = await retriever.search(question, product);
       logEvent({
         kind: "tool_result",
         question,

@@ -2,13 +2,14 @@ export type ConnectionStatus = "idle" | "connecting" | "connected" | "error" | "
 
 export interface TranscriptEntry {
   id: string;
-  role: "user" | "assistant" | "tool";
+  role: "user" | "assistant";
   text: string;
 }
 
 export interface PolicyEvidence {
   text: string;
   section: string;
+  document: string;
   score: number;
 }
 
