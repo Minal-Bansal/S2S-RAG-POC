@@ -15,6 +15,7 @@ export function TranscriptPanel({ entries }: { entries: TranscriptEntry[] }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (entries.length === 0) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [entries.length]);
 

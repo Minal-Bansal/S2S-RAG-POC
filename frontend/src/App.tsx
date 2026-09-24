@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controls } from "./components/Controls";
 import { LoginScreen } from "./components/LoginScreen";
 import { TranscriptPanel } from "./components/TranscriptPanel";
@@ -7,6 +7,12 @@ import { useRealtimeSession } from "./realtime/useRealtimeSession";
 export default function App() {
   const { status, transcript, connect, disconnect } = useRealtimeSession();
   const [username, setUsername] = useState<string | null>(null);
+
+  // The login form can leave the page scrolled (e.g. autoFocus on the
+  // username field); make sure the session screen always opens at the top.
+  useEffect(() => {
+    if (username) window.scrollTo(0, 0);
+  }, [username]);
 
   const handleLogout = () => {
     disconnect();

@@ -32,6 +32,10 @@ const SOURCES = [
     document: "Star Health Gain Insurance Policy",
     url: "https://d28c6jni2fmamz.cloudfront.net/Brochure_Star_Health_Gain_Insurance_Policy_V_13_Web_Page_4e4f649213.pdf",
   },
+  {
+    document: "Star Health Super Star Insurance Policy",
+    url: "https://d28c6jni2fmamz.cloudfront.net/Brochure_Super_Star_Web_026575d7c4.pdf",
+  },
 ];
 
 interface IndexedChunk {

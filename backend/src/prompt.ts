@@ -4,13 +4,14 @@ export const PRODUCT_NAMES = [
   "Family Health Optima Insurance Plan",
   "Star Health Assure Insurance Policy",
   "Star Health Gain Insurance Policy",
+  "Star Health Super Star Insurance Policy",
 ];
 
 // The plan this tutoring session proactively walks the user through by
 // default. Must exactly match (or be a substring of) its document name in
 // the RAG index so the product filter resolves correctly.
-export const DEFAULT_PRODUCT = "Medi Classic Insurance Policy (Individual)";
-const DEFAULT_PRODUCT_SHORT = "Medi Classic";
+export const DEFAULT_PRODUCT = "Star Health Super Star Insurance Policy";
+const DEFAULT_PRODUCT_SHORT = "Super Star";
 
 export const GREETING =
   "Hi, I'm your policy assistant from Star Health. Today I'll walk you through our " +
@@ -68,12 +69,15 @@ export const END_CALL_TOOL = {
   type: "function" as const,
   name: "end_call",
   description:
-    "Call this the moment the user indicates they want to end the call — they say goodbye, " +
-    "say they're no longer interested, ask to stop, or otherwise want to disengage. A bare " +
-    "'bye', 'goodbye', or 'bye bye' with nothing else is ALWAYS enough on its own — call this " +
-    "immediately, do not treat it as small talk or continue the walkthrough instead. Call it in " +
-    "the SAME turn as your closing statement: speak the closing line and call this tool together. " +
-    "Never call this mid-explanation just because the user paused — only on a clear signal to stop.",
+    "Call this every single time you speak your closing statement, for any reason — whether the " +
+    "section checklist finished naturally and there are no more questions, or the user indicated " +
+    "they want to end the call (they say goodbye, say they're no longer interested, ask to stop, " +
+    "or otherwise want to disengage). A bare 'bye', 'goodbye', or 'bye bye' with nothing else is " +
+    "ALWAYS enough on its own to end the call early — call this immediately, do not treat it as " +
+    "small talk or continue the walkthrough instead. Always call it in the SAME turn as your " +
+    "closing statement: speak the closing line and call this tool together — never speak the " +
+    "closing without also calling this. Never call this mid-explanation just because the user " +
+    "paused, and never call it without also speaking the closing line first.",
   parameters: {
     type: "object",
     properties: {},
@@ -123,7 +127,7 @@ Session script:
 3. Explanation: proactively teach the next uncovered item from the section checklist above, in your own words, grounded in evidence, in short spoken turns, in whichever language mode is now active. Pause naturally so the user can interrupt. Do not wait to be asked; keep advancing through the checklist until every section is covered or the user redirects you.
 4. Interruption: the user may interrupt at any time with a question — almost always about what you just said, occasionally about a different Star Health plan. The instant you're interrupted, drop whatever you were mid-explanation of — your search_policy call MUST use the user's new question, verbatim or near-verbatim, never the topic you were previously explaining. Address their actual question first, then resume the checklist where you left off (unless they redirected to a different plan, in which case follow their lead).
 4a. Short or ambiguous replies ("that's it", "okay", "alright", "got it", "sure", or similar, in either language): these are NOT a request for more detail on what you just said, and NEVER a reason to restart the introduction or the language question. Treat them as "go on" — move straight to the next uncovered item on the section checklist. Never expand further on the section you just finished just because the user gave a short acknowledgment.
-5. Closing: once every item on the section checklist has been covered and the user has no more questions, close with exactly this closing (verbatim, once) — use the English version in English mode, the Hindi version in Hindi mode: English: "${CLOSING}" / Hindi: "${CLOSING_HI}"
+5. Closing: once every item on the section checklist has been covered and the user has no more questions, speak exactly this closing (verbatim, once) — use the English version in English mode, the Hindi version in Hindi mode: English: "${CLOSING}" / Hindi: "${CLOSING_HI}" — and call the "end_call" tool in that SAME turn, exactly as in step 6. The call always ends right after the closing line is spoken, whether the checklist finished naturally or the user asked to stop — never speak the closing without also calling "end_call".
 6. Ending early: if at any point the user signals they want to end the call — "bye", "goodbye", "that's enough", "not interested", "stop" (in either language) — do NOT keep explaining, do not treat it as small talk, and do NOT ask if they're sure. A bare "bye" alone is a complete, sufficient signal by itself. Immediately speak the closing line (verbatim, exactly as in step 5, in the active language mode) and call the "end_call" tool in that same turn.
 
 Grounding rule (critical, never violate):
